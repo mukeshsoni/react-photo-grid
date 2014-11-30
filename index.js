@@ -19,7 +19,6 @@ var imageElements = [];
 
 function imageLoadCallback(id, callback) {
     return function(e) {
-        console.log('event: ', e.path[0].naturalWidth);
         callback(id, this.naturalWidth, this.naturalHeight);
     }
 }
@@ -80,7 +79,6 @@ var ImageGrid = React.createClass({
     handleImageClick: function handleImageClick(imageId, event) {
         this.props.onImageClick && this.props.onImageClick(imageId);
     },
-    // TODO - if the height of all the images is less than the grid height (container height), change the container height and width
     recalculateGrid: function(id, width, height) {
         var _imagesToShow = _.clone(this.state.imagesToShow);
 
@@ -96,10 +94,6 @@ var ImageGrid = React.createClass({
                 return image.height;
             }));
 
-            console.log('index for image with max height: ', indexForMaxHeightImage, _.max(_imagesToShow, function(image) {
-                return image.height;
-            }));
-            console.log('max height image height: ', _imagesToShow[indexForMaxHeightImage].height);
             if(_imagesToShow[indexForMaxHeightImage].height < containerHeight) {
                 containerHeight = _imagesToShow[indexForMaxHeightImage].height;
             }

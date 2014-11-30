@@ -6,11 +6,10 @@ var ReactImageGrid = require('../');
 function handleImageClick(image) {
     console.log('Image clicked. Show it in a nice lightbox?');
 }
-console.log('1');
 var imageData = [
         {
             id: Math.random()*1000,
-            path: 'http://placehold.it/200x200'
+            path: 'http://placehold.it/300x300'
         },
         {
             id: Math.random()*1000,
@@ -26,15 +25,13 @@ var imageData = [
         }
     ];
 
-imageData = _.first(imageData, 4);
+imageData = _.first(imageData, 3);
 
-console.log('2');
 var imageGrid = (
             React.createElement(ReactImageGrid, {
                 onImageClick: handleImageClick, 
                 data: imageData})
             );
-console.log('3');
 React.render(imageGrid, document.getElementById('container'));
 
 
@@ -60,7 +57,6 @@ var imageElements = [];
 
 function imageLoadCallback(id, callback) {
     return function(e) {
-        console.log('event: ', e.path[0].naturalWidth);
         callback(id, this.naturalWidth, this.naturalHeight);
     }
 }
@@ -121,7 +117,6 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
     handleImageClick: function handleImageClick(imageId, event) {
         this.props.onImageClick && this.props.onImageClick(imageId);
     },
-    // TODO - if the height of all the images is less than the grid height (container height), change the container height and width
     recalculateGrid: function(id, width, height) {
         var _imagesToShow = _.clone(this.state.imagesToShow);
 
@@ -137,10 +132,6 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
                 return image.height;
             }));
 
-            console.log('index for image with max height: ', indexForMaxHeightImage, _.max(_imagesToShow, function(image) {
-                return image.height;
-            }));
-            console.log('max height image height: ', _imagesToShow[indexForMaxHeightImage].height);
             if(_imagesToShow[indexForMaxHeightImage].height < containerHeight) {
                 containerHeight = _imagesToShow[indexForMaxHeightImage].height;
             }
