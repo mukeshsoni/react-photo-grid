@@ -9,7 +9,7 @@ console.log('1');
 var imageData = [
         {
             id: Math.random()*1000,
-            path: 'http://placehold.it/500x400'
+            path: 'http://placehold.it/200x200'
         },
         {
             id: Math.random()*1000,

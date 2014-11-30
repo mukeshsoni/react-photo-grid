@@ -18,7 +18,8 @@ var React = require('react');
 var imageElements = [];
 
 function imageLoadCallback(id, callback) {
-    return function() {
+    return function(e) {
+        console.log('event: ', e.path[0].naturalWidth);
         callback(id, this.naturalWidth, this.naturalHeight);
     }
 }
@@ -36,6 +37,7 @@ var ImageGrid = React.createClass({
     getInitialState: function() {
         var state = {
             containerWidth: 500,
+            containerHeight: 500,
             imagesToShow: this.props.data.length <= 4 ? this.props.data : _.first(this.props.data, 4)
         };
 
@@ -60,18 +62,25 @@ var ImageGrid = React.createClass({
             getImageDimensions(image.path, image.id, this.recalculateGrid);
         }, this);
 
-        this.setState({containerWidth: this.getDOMNode().offsetWidth});
+        this.setState({
+            containerWidth: this.getDOMNode().offsetWidth,
+            containerHeight: this.getDOMNode().offsetWidth
+        });
 
         // $(this.getDOMNode()).resize(this.onResize);
         // elementResizeEvent(this.getDOMNode(), this.onResize);
     },
     // Throttle updates to 60 FPS.
     onResize: _.throttle(function() {
-        this.setState({containerWidth: this.getDOMNode().offsetWidth});
+        this.setState({
+            containerWidth: this.getDOMNode().offsetWidth,
+            containerHeight: this.getDOMNode().offsetWidth
+        });
     }, 16.666),
     handleImageClick: function handleImageClick(imageId, event) {
         this.props.onImageClick && this.props.onImageClick(imageId);
     },
+    // TODO - if the height of all the images is less than the grid height (container height), change the container height and width
     recalculateGrid: function(id, width, height) {
         var _imagesToShow = _.clone(this.state.imagesToShow);
 
@@ -79,6 +88,7 @@ var ImageGrid = React.createClass({
         _imagesToShow[imageIndex].width = width;
         _imagesToShow[imageIndex].height = height;
         var indexForMaxHeightImage = 0;
+        var containerHeight = this.state.containerHeight;
 
         // if all the images have width and height, we can rotate the array around the image with max height, so that the first image has the max height and can be displayed properly on the left side
         if(_.all(_imagesToShow, function(image) { return image.width && image.height;})) {
@@ -89,16 +99,23 @@ var ImageGrid = React.createClass({
             console.log('index for image with max height: ', indexForMaxHeightImage, _.max(_imagesToShow, function(image) {
                 return image.height;
             }));
-        }
-        _imagesToShow.push.apply(_imagesToShow, _imagesToShow.splice(0, indexForMaxHeightImage));
+            console.log('max height image height: ', _imagesToShow[indexForMaxHeightImage].height);
+            if(_imagesToShow[indexForMaxHeightImage].height < containerHeight) {
+                containerHeight = _imagesToShow[indexForMaxHeightImage].height;
+            }
 
-        this.setState({
-            imagesToShow: _imagesToShow
-        });
+            _imagesToShow.push.apply(_imagesToShow, _imagesToShow.splice(0, indexForMaxHeightImage));
+            this.setState({
+                imagesToShow: _imagesToShow,
+                containerHeight: containerHeight
+            });
+        }
+
+
     },
     getComponentStyles: function(images) {
         var numberOfImages = images.length;
-        var smallestHeightRaw = Math.floor(this.state.containerWidth/(numberOfImages - 1));
+        var smallestHeightRaw = Math.floor(this.state.containerHeight/(numberOfImages - 1));
         var margin = 2;
         var smallImageHeight = smallestHeightRaw - margin;
         var styles = [];
@@ -112,8 +129,8 @@ var ImageGrid = React.createClass({
         };
 
         if(numberOfImages < 1) return styles;
-        if(numberOfImages === 1) {
 
+        if(numberOfImages === 1) {
             // set some big numbers in case width and height not provided
             if(!images[0].width) images[0].width = 1000000;
             if(!images[0].height) images[0].height = 1000000;
@@ -122,15 +139,15 @@ var ImageGrid = React.createClass({
                 styles = [
                     {
                         width: Math.min(this.state.containerWidth, images[0].width) - margin,
-                        height: Math.min(this.state.containerWidth, images[0].width)*images[0].height/images[0].width,
+                        height: Math.min(this.state.containerWidth, images[0].width)*images[0].height/images[0].width - margin,
                         margin: margin
                     }
                 ];
             } else {
                 styles = [
                     {
-                        width: Math.min(this.state.containerWidth, images[0].height)*images[0].width/images[0].height,
-                        height: Math.min(this.state.containerWidth, images[0].height) - margin,
+                        width: Math.min(this.state.containerHeight, images[0].height)*images[0].width/images[0].height - margin,
+                        height: Math.min(this.state.containerHeight, images[0].height) - margin,
                         margin: margin
                     }
                 ];
@@ -139,12 +156,12 @@ var ImageGrid = React.createClass({
             styles = [
                 {
                     width: Math.min(smallImageHeight/2)-margin,
-                    height: this.state.containerWidth-margin,
+                    height: this.state.containerHeight-margin,
                     marginRight: margin
                 },
                 {
                     width: Math.min(smallImageHeight/2)-margin,
-                    height: this.state.containerWidth-margin,
+                    height: this.state.containerHeight-margin,
                     marginBottom: margin
                 },
             ];
@@ -152,7 +169,7 @@ var ImageGrid = React.createClass({
             styles = [
                 {
                     width: smallImageHeight*(numberOfImages-2),
-                    height: this.state.containerWidth-margin,
+                    height: this.state.containerHeight-margin,
                     marginRight: margin
                 }
             ];
