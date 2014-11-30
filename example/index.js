@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var React = require('react');
 var ReactImageGrid = require('../');
 
@@ -8,21 +9,23 @@ console.log('1');
 var imageData = [
         {
             id: Math.random()*1000,
-            path: 'http://placehold.it/1000/1000'
+            path: 'http://placehold.it/500x400'
         },
         {
             id: Math.random()*1000,
-            path: 'http://placehold.it/400/500'
+            path: 'http://placehold.it/600x700'
         },
         {
             id: Math.random()*1000,
-            path: 'http://placehold.it/500/300'
+            path: 'http://placehold.it/500x300'
         },
         {
             id: Math.random()*1000,
-            path: 'http://placehold.it/600/800'
+            path: 'http://placehold.it/600x800'
         }
     ];
+
+imageData = _.first(imageData, 4);
 
 console.log('2');
 var imageGrid = (

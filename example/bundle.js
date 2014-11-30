@@ -1,4 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/mukesh/Documents/projects/react-photo-grid/example/index.js":[function(require,module,exports){
+var _ = require('lodash');
 var React = require('react');
 var ReactImageGrid = require('../');
 
@@ -9,21 +10,23 @@ console.log('1');
 var imageData = [
         {
             id: Math.random()*1000,
-            path: 'http://placehold.it/1000/1000'
+            path: 'http://placehold.it/500x400'
         },
         {
             id: Math.random()*1000,
-            path: 'http://placehold.it/400/500'
+            path: 'http://placehold.it/600x700'
         },
         {
             id: Math.random()*1000,
-            path: 'http://placehold.it/500/300'
+            path: 'http://placehold.it/500x300'
         },
         {
             id: Math.random()*1000,
-            path: 'http://placehold.it/600/800'
+            path: 'http://placehold.it/600x800'
         }
     ];
+
+imageData = _.first(imageData, 4);
 
 console.log('2');
 var imageGrid = (
@@ -35,7 +38,7 @@ console.log('3');
 React.render(imageGrid, document.getElementById('container'));
 
 
-},{"../":"/Users/mukesh/Documents/projects/react-photo-grid/index.js","react":"/Users/mukesh/Documents/projects/react-photo-grid/node_modules/react/react.js"}],"/Users/mukesh/Documents/projects/react-photo-grid/index.js":[function(require,module,exports){
+},{"../":"/Users/mukesh/Documents/projects/react-photo-grid/index.js","lodash":"/Users/mukesh/Documents/projects/react-photo-grid/node_modules/lodash/dist/lodash.js","react":"/Users/mukesh/Documents/projects/react-photo-grid/node_modules/react/react.js"}],"/Users/mukesh/Documents/projects/react-photo-grid/index.js":[function(require,module,exports){
 /** @jsx React.DOM */
 
 var _ = require('lodash');
@@ -52,11 +55,21 @@ var React = require('react');
  */
 
 // TODO - element resize event is not working
+
+var imageElements = [];
+
+function imageLoadCallback(id, callback) {
+    return function() {
+        callback(id, this.naturalWidth, this.naturalHeight);
+    }
+}
+
 function getImageDimensions(src, id, cb) {
     var img = new Image();
-    img.onload = function() {
-        cb(id, this.width, this.height)
-    }
+    img.id = id;
+    imageElements.push(img);
+    img.addEventListener('load', imageLoadCallback(id, cb));
+
     img.src = src;
 }
 
@@ -78,9 +91,14 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
             data: []
         };
     },
+    componentWillUnmount: function() {
+        _.each(imageElements, function(imageElement) {
+            imageElement.removeEventListener('load', imageLoadCallback(imageElement.id, this.recalculateGrid));
+        });
+    },
     componentDidMount: function() {
         _.each(this.state.imagesToShow, function(image, index) {
-            // getImageDimensions(image.path, image.id, this.recalculateGrid);
+            getImageDimensions(image.path, image.id, this.recalculateGrid);
         }, this);
 
         this.setState({containerWidth: this.getDOMNode().offsetWidth});
@@ -101,10 +119,11 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
         var imageIndex = _.findIndex(_imagesToShow, {id: id});
         _imagesToShow[imageIndex].width = width;
         _imagesToShow[imageIndex].height = height;
+        var indexForMaxHeightImage = 0;
 
         // if all the images have width and height, we can rotate the array around the image with max height, so that the first image has the max height and can be displayed properly on the left side
         if(_.all(_imagesToShow, function(image) { return image.width && image.height;})) {
-            var indexForMaxHeightImage = _.findIndex(_imagesToShow, _.max(_imagesToShow, function(image) {
+            indexForMaxHeightImage = _.findIndex(_imagesToShow, _.max(_imagesToShow, function(image) {
                 return image.height;
             }));
 
@@ -112,6 +131,7 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
                 return image.height;
             }));
         }
+        _imagesToShow.push.apply(_imagesToShow, _imagesToShow.splice(0, indexForMaxHeightImage));
 
         this.setState({
             imagesToShow: _imagesToShow
@@ -133,14 +153,18 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
         };
 
         if(numberOfImages < 1) return styles;
-
         if(numberOfImages === 1) {
+
+            // set some big numbers in case width and height not provided
+            if(!images[0].width) images[0].width = 1000000;
+            if(!images[0].height) images[0].height = 1000000;
+
             if(images[0].width > images[0].height) {
                 styles = [
                     {
                         width: Math.min(this.state.containerWidth, images[0].width) - margin,
                         height: Math.min(this.state.containerWidth, images[0].width)*images[0].height/images[0].width,
-                        'margin': margin
+                        margin: margin
                     }
                 ];
             } else {
@@ -148,7 +172,7 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
                     {
                         width: Math.min(this.state.containerWidth, images[0].height)*images[0].width/images[0].height,
                         height: Math.min(this.state.containerWidth, images[0].height) - margin,
-                        'margin': margin
+                        margin: margin
                     }
                 ];
             }
@@ -157,12 +181,12 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
                 {
                     width: Math.min(smallImageHeight/2)-margin,
                     height: this.state.containerWidth-margin,
-                    'margin-right': margin
+                    marginRight: margin
                 },
                 {
                     width: Math.min(smallImageHeight/2)-margin,
                     height: this.state.containerWidth-margin,
-                    'margin-bottom': margin
+                    marginBottom: margin
                 },
             ];
         } else {
@@ -170,7 +194,7 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
                 {
                     width: smallImageHeight*(numberOfImages-2),
                     height: this.state.containerWidth-margin,
-                    'margin-right': margin
+                    marginRight: margin
                 }
             ];
 
@@ -178,7 +202,7 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
                 styles.push({
                     width: smallImageHeight-5,
                     height: smallImageHeight,
-                    'margin-bottom': margin
+                    marginBottom: margin
                 });
             }
         }
@@ -196,21 +220,19 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
             // max width and height has to be dynamic depending on this image's dimensions
             var imageStyle;
 
-            if(image.width && image.height && image.width < image.height) {
-                imageStyle = {
-                    maxWidth: componentStyle.width,
-                };
-            } else {
-                imageStyle = {
-                    maxHeight: componentStyle.height,
-                };
+            if(image.width && image.height) {
+                if(image.width <= componentStyle.width || image.height <= componentStyle.height) {
+                    // do nothing
+                } else if((image.width/componentStyle.width) < (image.height/componentStyle.height)) {
+                    imageStyle = {
+                        maxWidth: componentStyle.width,
+                    };
+                } else {
+                    imageStyle = {
+                        maxHeight: componentStyle.height,
+                    };
+                }
             }
-
-            // if(index === 0) {
-            //     imageStyle = {
-            //         minHeight: this.state.containerWidth
-            //     };
-            // }
 
             return (
                 React.createElement("div", {key: 'image_'+index, style: componentStyle}, 
@@ -228,7 +250,7 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
         };
 
         return (
-            React.createElement("div", {style: {'background-color': 'white'}}, 
+            React.createElement("div", {style: {backgroundColor: 'white'}}, 
                 images, 
                 React.createElement("div", {style: {'clear': 'both'}})
             )
