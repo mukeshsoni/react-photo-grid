@@ -1,0 +1,36 @@
+{
+  "name": "react-photo-grid",
+  "version": "1.0.0",
+  "description": "Show images in a grid like facebook does. Useful to show a preview of main images when many are uploaded.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "watchify example/index.js -o example/bundle.js -v & st -nc"
+  },
+  "keywords": [
+    "react-photo-grid",
+    "react-image-grid",
+    "react-component",
+    "reactjs",
+    "react"
+  ],
+  "browserify": {
+    "transform": [
+      "reactify",
+      "node-lessify"
+    ]
+  },
+  "author": "Mukesh Soni <mukeshsoni@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^6.1.0",
+    "node-lessify": "0.0.6",
+    "reactify": "^0.16.0",
+    "st": "^0.5.2",
+    "watchify": "^2.0.0"
+  },
+  "dependencies": {
+    "lodash": "^2.4.1",
+    "react": "^0.12.1"
+  }
+}
