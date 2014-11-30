@@ -3,6 +3,16 @@
 var _ = require('lodash');
 var React = require('react');
 
+/* Acceptance Criteria
+ * 1. Given 2 or more images show them in a square grid
+ * 2. If only one image is given
+ *        and 2.1 the height of image is greater than width - show in same square grid with height of grid = min(gridHeight, photoHeight)
+ *      or 2.2 the width of image is greater than it's height - widthOfGrid = gridWidth, heightOfGrid = widthOfGrid*photoHeight/photoWidth
+                but if photoWidth < gridWidth - photowidth within grid is equal to the photo width
+ * 3. If 2 images are supplied 
+ * 
+ */
+
 // TODO - element resize event is not working
 function getImageDimensions(src, id, cb) {
     var img = new Image();
@@ -74,134 +84,70 @@ var ImageGrid = React.createClass({
         var smallestHeightRaw = Math.floor(this.state.containerWidth/(numberOfImages - 1));
         var margin = 2;
         var smallImageHeight = smallestHeightRaw - margin;
+        var styles = [];
+        var commonStyle = {
+            display: 'inline-block',
+            position: 'relative',
+            overflow: 'hidden',
+            float: 'left',
+            verticalAlign: 'top',
+            cursor: 'pointer'
+        };
+
+        if(numberOfImages < 1) return styles;
 
         if(numberOfImages === 1) {
-            return [
-                {
-                    width: Math.min(this.state.containerWidth, images[0].width),
-                    height: Math.min(this.state.containerWidth, images[0].height),
-                    display: 'inline-block',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    'margin': margin,
-                    float: 'left',
-                    verticalAlign: 'top',
-                    cursor: 'pointer'
-              }
-          ];
-        }
-
-        if(numberOfImages === 2) {
-            return [
+            if(images[0].width > images[0].height) {
+                styles = [
+                    {
+                        width: Math.min(this.state.containerWidth, images[0].width) - margin,
+                        height: Math.min(this.state.containerWidth, images[0].width)*images[0].height/images[0].width,
+                        'margin': margin
+                    }
+                ];
+            } else {
+                styles = [
+                    {
+                        width: Math.min(this.state.containerWidth, images[0].height)*images[0].width/images[0].height,
+                        height: Math.min(this.state.containerWidth, images[0].height) - margin,
+                        'margin': margin
+                    }
+                ];
+            }
+        } else if(numberOfImages === 2) {
+            styles = [
                 {
                     width: Math.min(smallImageHeight/2)-margin,
                     height: this.state.containerWidth-margin,
-                    display: 'inline-block',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    'margin-right': margin,
-                    float: 'left',
-                    verticalAlign: 'top',
-                    cursor: 'pointer'
+                    'margin-right': margin
                 },
                 {
                     width: Math.min(smallImageHeight/2)-margin,
                     height: this.state.containerWidth-margin,
-                    display: 'inline-block',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    'margin-bottom': margin,
-                    float: 'left',
-                    verticalAlign: 'top',
-                    cursor: 'pointer'
+                    'margin-bottom': margin
                 },
             ];
-        }
-
-        if(numberOfImages === 3) {
-            return [
+        } else {
+            styles = [
                 {
                     width: smallImageHeight*(numberOfImages-2),
                     height: this.state.containerWidth-margin,
-                    display: 'inline-block',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    'margin-right': margin,
-                    float: 'left',
-                    verticalAlign: 'top',
-                    cursor: 'pointer'
-                },
-                {
-                    width: smallImageHeight-5,
-                    height: smallImageHeight,
-                    display: 'inline-block',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    'margin-bottom': margin,
-                    float: 'left',
-                    verticalAlign: 'top',
-                    cursor: 'pointer'
-                },
-                {
-                    width: smallImageHeight-5,
-                    height: smallImageHeight,
-                    'margin-bottom': margin,
-                    display: 'inline-block',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    float: 'left',
-                    verticalAlign: 'top',
-                    cursor: 'pointer'
+                    'margin-right': margin
                 }
             ];
+
+            for(var i = 1; i < numberOfImages && i < 4; i++) {
+                styles.push({
+                    width: smallImageHeight-5,
+                    height: smallImageHeight,
+                    'margin-bottom': margin
+                });
+            }
         }
 
-        return [
-            {
-                width: smallestHeightRaw*(numberOfImages-2),
-                height: this.state.containerWidth-margin,
-                display: 'inline-block',
-                position: 'relative',
-                overflow: 'hidden',
-                'margin-right': margin,
-                float: 'left',
-                verticalAlign: 'top',
-                cursor: 'pointer'
-            },
-            {
-                width: smallImageHeight-5,
-                height: smallImageHeight,
-                display: 'inline-block',
-                position: 'relative',
-                overflow: 'hidden',
-                'margin-bottom': margin,
-                float: 'left',
-                verticalAlign: 'top',
-                cursor: 'pointer'
-            },
-            {
-                width: smallImageHeight-5,
-                height: smallImageHeight,
-                'margin-bottom': margin,
-                display: 'inline-block',
-                position: 'relative',
-                overflow: 'hidden',
-                float: 'left',
-                verticalAlign: 'top',
-                cursor: 'pointer'
-            },
-            {
-                width: smallImageHeight-5,
-                height: smallImageHeight,
-                'margin-bottom': margin,
-                display: 'inline-block',
-                position: 'relative',
-                overflow: 'hidden',
-                float: 'left',
-                verticalAlign: 'top',
-                cursor: 'pointer'
-            }
-        ];
+        return _.map(styles, function(style) {
+            return _.defaults(style, commonStyle);
+        });;
     },
     render: function() {
         var componentStyles = this.getComponentStyles(this.state.imagesToShow);
@@ -222,11 +168,11 @@ var ImageGrid = React.createClass({
                 };
             }
 
-            if(index === 0) {
-                imageStyle = {
-                    minHeight: this.state.containerWidth
-                };
-            }
+            // if(index === 0) {
+            //     imageStyle = {
+            //         minHeight: this.state.containerWidth
+            //     };
+            // }
 
             return (
                 <div key={'image_'+index} style={componentStyle}>
