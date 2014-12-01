@@ -6,7 +6,33 @@ var ReactImageGrid = require('../');
 function handleImageClick(image) {
     console.log('Image clicked. Show it in a nice lightbox?');
 }
-var imageData = [
+
+var feelingLucky = Math.floor(Math.random()*2);
+var luckType = ['', 'nightlife', 'animals', 'city', 'people', 'nature', 'sports', 'cats', 'abstract', 'transport'];
+var imageData;
+
+if(feelingLucky) {
+    var luckTypeSelector = luckType[Math.floor(Math.random()*luckType.length)];
+    imageData = [
+        {
+            id: Math.random()*1000,
+            path: 'http://lorempixel.com/300/300/'+luckTypeSelector
+        },
+        {
+            id: Math.random()*1000,
+            path: 'http://lorempixel.com/500/700/'+luckTypeSelector
+        },
+        {
+            id: Math.random()*1000,
+            path: 'http://lorempixel.com/500/300/'+luckTypeSelector
+        },
+        {
+            id: Math.random()*1000,
+            path: 'http://lorempixel.com/600/800/'+luckTypeSelector
+        }
+    ];
+} else {
+    imageData = [
         {
             id: Math.random()*1000,
             path: 'http://placehold.it/300x300'
@@ -24,6 +50,7 @@ var imageData = [
             path: 'http://placehold.it/600x800'
         }
     ];
+}
 
 imageData = _.first(imageData, 4);
 
@@ -34,8 +61,6 @@ var imageGrid = (
                 data: imageData})
             );
 React.render(imageGrid, document.getElementById('container'));
-
-
 },{"../":"/Users/mukesh/Documents/projects/react-photo-grid/index.js","lodash":"/Users/mukesh/Documents/projects/react-photo-grid/node_modules/lodash/dist/lodash.js","react":"/Users/mukesh/Documents/projects/react-photo-grid/node_modules/react/react.js"}],"/Users/mukesh/Documents/projects/react-photo-grid/index.js":[function(require,module,exports){
 /** @jsx React.DOM */
 
@@ -111,6 +136,7 @@ console.log('container Height set to: ', containerHeight);
 
         // only set it to parents width/height if no gridsize is provided
         if(!this.props.gridSize) {
+            console.log('changing container width: ', this.getDOMNode().offsetWidth);
             this.setState({
                 containerWidth: this.getDOMNode().offsetWidth,
                 containerHeight: this.getDOMNode().offsetWidth
@@ -279,11 +305,14 @@ console.log('container Height set to: ', containerHeight);
             height: this.state.containerWidth,
             backgroundColor: 'white'
         };
-
+// the outer div is needed so that container width can be recalculated based on the parent container width (which the outer div inherits
+// the div inside the outer div is assigned a width in the first render itself. so that doesn't work out while trying to reset container width
         return (
-            React.createElement("div", {style: containerStyle}, 
-                images, 
-                React.createElement("div", {style: {'clear': 'both'}})
+            React.createElement("div", null, 
+                React.createElement("div", {style: containerStyle}, 
+                    images, 
+                    React.createElement("div", {style: {'clear': 'both'}})
+                )
             )
         );
     }

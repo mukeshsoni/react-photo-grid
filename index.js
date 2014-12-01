@@ -72,6 +72,7 @@ console.log('container Height set to: ', containerHeight);
 
         // only set it to parents width/height if no gridsize is provided
         if(!this.props.gridSize) {
+            console.log('changing container width: ', this.getDOMNode().offsetWidth);
             this.setState({
                 containerWidth: this.getDOMNode().offsetWidth,
                 containerHeight: this.getDOMNode().offsetWidth
@@ -240,11 +241,14 @@ console.log('container Height set to: ', containerHeight);
             height: this.state.containerWidth,
             backgroundColor: 'white'
         };
-
+// the outer div is needed so that container width can be recalculated based on the parent container width (which the outer div inherits
+// the div inside the outer div is assigned a width in the first render itself. so that doesn't work out while trying to reset container width
         return (
-            <div  style={containerStyle}>
-                {images}
-                <div style={{'clear': 'both'}} />
+            <div>
+                <div style={containerStyle}>
+                    {images}
+                    <div style={{'clear': 'both'}} />
+                </div>
             </div>
         );
     }
