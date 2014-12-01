@@ -55,19 +55,19 @@ if(feelingLucky) {
 imageData = [
     {
         id: Math.random()*1000,
-        path: 'images/DSCF0983.jpg'
+        path: 'images/1.jpg'
     },
     {
         id: Math.random()*1000,
-        path: 'images/DSCF0989.jpg'
+        path: 'images/2.jpg'
     },
     {
         id: Math.random()*1000,
-        path: 'images/DSCF0991.jpg'
+        path: 'images/3.jpg'
     },
     {
         id: Math.random()*1000,
-        path: 'images/DSCF0999.jpg'
+        path: 'images/4.jpg'
     }
 ];
 
@@ -88,18 +88,7 @@ React.render(imageGrid, document.getElementById('container'));
 var _ = require('lodash');
 var React = require('react');
 
-/* Acceptance Criteria
- * 1. Given 2 or more images show them in a square grid
- * 2. If only one image is given
- *        and 2.1 the height of image is greater than width - show in same square grid with height of grid = min(gridHeight, photoHeight)
- *      or 2.2 the width of image is greater than it's height - widthOfGrid = gridWidth, heightOfGrid = widthOfGrid*photoHeight/photoWidth
-                but if photoWidth < gridWidth - photowidth within grid is equal to the photo width
- * 3. If 2 images are supplied
- *
- */
-
 // TODO - element resize event is not working
-// TODO - allow user to send a grid size
 var imageElements = [];
 
 function imageLoadCallback(id, callback) {
@@ -119,7 +108,9 @@ function getImageDimensions(src, id, cb) {
 
 var ImageGrid = React.createClass({displayName: 'ImageGrid',
     propTypes: {
-        gridSize: React.PropTypes.string
+        data: React.PropTypes.array.isRequired,
+        gridSize: React.PropTypes.string,
+        onImageClick: React.PropTypes.func
     },
     getInitialState: function() {
         var containerWidth=500, containerHeight=500;
@@ -151,6 +142,7 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
         }
 
         var state = {
+            // ladyLuck: 0,
             ladyLuck: Math.floor(Math.random()*2),
             containerWidth: containerWidth,
             containerHeight: containerHeight,
@@ -213,7 +205,7 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
 
         var contenders = ['Width', 'Height'];
         var winner = contenders[this.state.ladyLuck].toLowerCase();
-        var loser = _.first(_.without(contenders, winner)).toLowerCase();
+        var loser = _.first(_.without(contenders, contenders[this.state.ladyLuck])).toLowerCase();
 
         // if all the images have width and height, we can rotate the array around the image with max height,
         // so that the first image has the max height and can be displayed properly on the left side
@@ -254,10 +246,8 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
         var marginLoser = _.first(_.without(marginSetters, marginWinner));
 
         var smallestDimensionRaw = Math.floor(this.state['container' + winner]/(numberOfImages - 1));
-        console.log('smallest dimension raw: ', smallestDimensionRaw);
         var margin = 2;
         var smallImageDimension = smallestDimensionRaw - margin;
-        console.log('smallest dimension: ', smallImageDimension);
         var styles = [];
         var commonStyle = {
             display: 'inline-block',

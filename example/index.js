@@ -54,19 +54,19 @@ if(feelingLucky) {
 imageData = [
     {
         id: Math.random()*1000,
-        path: 'images/DSCF0983.jpg'
+        path: 'images/1.jpg'
     },
     {
         id: Math.random()*1000,
-        path: 'images/DSCF0989.jpg'
+        path: 'images/2.jpg'
     },
     {
         id: Math.random()*1000,
-        path: 'images/DSCF0991.jpg'
+        path: 'images/3.jpg'
     },
     {
         id: Math.random()*1000,
-        path: 'images/DSCF0999.jpg'
+        path: 'images/4.jpg'
     }
 ];
 
