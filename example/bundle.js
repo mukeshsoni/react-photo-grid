@@ -232,8 +232,10 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
         var marginLoser = _.first(_.without(marginSetters, marginWinner));
 
         var smallestDimensionRaw = Math.floor(this.state['container' + winner]/(numberOfImages - 1));
+        console.log('smallest dimension raw: ', smallestDimensionRaw);
         var margin = 2;
         var smallImageDimension = smallestDimensionRaw - margin;
+        console.log('smallest dimension: ', smallImageDimension);
         var styles = [];
         var commonStyle = {
             display: 'inline-block',
@@ -279,7 +281,7 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
                 break;
             default:
                 styles[0] = {};
-                styles[0][winner.toLowerCase()] = this.state['container'+winner]-margin;
+                styles[0][winner.toLowerCase()] = this.state['container'+winner];
                 styles[0][loser.toLowerCase()] = smallImageDimension*(numberOfImages-2);
                 styles[0]['margin'+marginWinner] = margin;
                 var styleForSmallerImages = {
@@ -289,8 +291,13 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
                 styleForSmallerImages['margin'+marginLoser] = margin;
 
                 for(var i = 1; i < numberOfImages && i < 4; i++) {
-                    styles.push(styleForSmallerImages);
+                    // cloning is important here because otherwise changing the dimension of last image changes it for everyone
+                    styles.push(_.clone(styleForSmallerImages)); 
                 }
+
+                // adjust the width/height of the last image in case of round off errors in division
+                styles[numberOfImages-1][winner.toLowerCase()] += styles[0][winner.toLowerCase()] - smallImageDimension*(numberOfImages-1) - margin*(numberOfImages-2);
+                styles[numberOfImages-1]['margin'+marginLoser] = 0;
         }
 
         return _.map(styles, function(style) {
