@@ -10,65 +10,31 @@ var feelingLucky = Math.floor(Math.random()*2);
 var luckType = ['', 'nightlife', 'animals', 'city', 'people', 'nature', 'sports', 'cats', 'transport'];
 var imageData;
 
-if(feelingLucky) {
+if(feelingLucky || true) {
     var luckTypeSelector = luckType[Math.floor(Math.random()*luckType.length)];
     imageData = [
-        {
-            id: Math.random()*1000,
-            path: 'http://lorempixel.com/300/300/'+luckTypeSelector
-        },
-        {
-            id: Math.random()*1000,
-            path: 'http://lorempixel.com/500/700/'+luckTypeSelector
-        },
-        {
-            id: Math.random()*1000,
-            path: 'http://lorempixel.com/500/300/'+luckTypeSelector
-        },
-        {
-            id: Math.random()*1000,
-            path: 'http://lorempixel.com/600/800/'+luckTypeSelector
-        }
+        {path: 'http://lorempixel.com/600/500/'+luckTypeSelector },
+        {path: 'http://lorempixel.com/400/400/'+luckTypeSelector },
+        {path: 'http://lorempixel.com/500/700/'+luckTypeSelector },
+        {path: 'http://lorempixel.com/600/800/'+luckTypeSelector }
     ];
-} else {
+} else { // for testing
     imageData = [
-        {
-            id: Math.random()*1000,
-            path: 'http://placehold.it/300x300'
-        },
-        {
-            id: Math.random()*1000,
-            path: 'http://placehold.it/500x700'
-        },
-        {
-            id: Math.random()*1000,
-            path: 'http://placehold.it/500x300'
-        },
-        {
-            id: Math.random()*1000,
-            path: 'http://placehold.it/600x800'
-        }
+        {path: 'http://placehold.it/400x400'},
+        {path: 'http://placehold.it/500x700'},
+        {path: 'http://placehold.it/600x500'},
+        {path: 'http://placehold.it/600x800'}
     ];
 }
 
-imageData = [
-    {
-        id: Math.random()*1000,
-        path: 'images/1.jpg'
-    },
-    {
-        id: Math.random()*1000,
-        path: 'images/2.jpg'
-    },
-    {
-        id: Math.random()*1000,
-        path: 'images/3.jpg'
-    },
-    {
-        id: Math.random()*1000,
-        path: 'images/4.jpg'
-    }
-];
+if(window.navigator.onLine === false) {
+    imageData = [
+        {path: 'images/1.jpg'},
+        {path: 'images/2.jpg'},
+        {path: 'images/3.jpg'},
+        {path: 'images/4.jpg'}
+    ];
+}
 
 imageData = _.first(imageData, 4);
 
