@@ -9,8 +9,8 @@ var React = require('react');
  *        and 2.1 the height of image is greater than width - show in same square grid with height of grid = min(gridHeight, photoHeight)
  *      or 2.2 the width of image is greater than it's height - widthOfGrid = gridWidth, heightOfGrid = widthOfGrid*photoHeight/photoWidth
                 but if photoWidth < gridWidth - photowidth within grid is equal to the photo width
- * 3. If 2 images are supplied 
- * 
+ * 3. If 2 images are supplied
+ *
  */
 
 // TODO - element resize event is not working
@@ -33,6 +33,9 @@ function getImageDimensions(src, id, cb) {
 }
 
 var ImageGrid = React.createClass({
+    propTypes: {
+        gridSize: React.PropTypes.string
+    },
     getInitialState: function() {
         var containerWidth=500, containerHeight=500;
 
@@ -41,9 +44,9 @@ var ImageGrid = React.createClass({
             containerWidth = container[0] || 500;
             containerHeight = container[1] || 500;
         }
-console.log('container width set to: ', containerWidth);
-console.log('container Height set to: ', containerHeight);
+
         var state = {
+            ladyLuck: Math.floor(Math.random()*2),
             containerWidth: containerWidth,
             containerHeight: containerHeight,
             imagesToShow: this.props.data.length <= 4 ? this.props.data : _.first(this.props.data, 4)
@@ -72,7 +75,6 @@ console.log('container Height set to: ', containerHeight);
 
         // only set it to parents width/height if no gridsize is provided
         if(!this.props.gridSize) {
-            console.log('changing container width: ', this.getDOMNode().offsetWidth);
             this.setState({
                 containerWidth: this.getDOMNode().offsetWidth,
                 containerHeight: this.getDOMNode().offsetWidth
@@ -101,7 +103,8 @@ console.log('container Height set to: ', containerHeight);
         var indexForMaxHeightImage = 0;
         var containerHeight = this.state.containerHeight;
 
-        // if all the images have width and height, we can rotate the array around the image with max height, so that the first image has the max height and can be displayed properly on the left side
+        // if all the images have width and height, we can rotate the array around the image with max height,
+        // so that the first image has the max height and can be displayed properly on the left side
         if(_.all(_imagesToShow, function(image) { return image.width && image.height;})) {
             // TODO - the logic should not only look the the image with max height but with height >= containerHeight and max(height/width ratio)
 
@@ -126,14 +129,20 @@ console.log('container Height set to: ', containerHeight);
                 containerHeight: containerHeight
             });
         }
-
-
     },
     getComponentStyles: function(images) {
         var numberOfImages = images.length;
-        var smallestHeightRaw = Math.floor(this.state.containerHeight/(numberOfImages - 1));
+        
+        var marginSetters = ['Bottom', 'Right'];
+        var contenders = ['Width', 'Height'];
+        var winner = contenders[this.state.ladyLuck];
+        var loser = _.first(_.without(contenders, winner));
+        var marginWinner = marginSetters[this.state.ladyLuck];
+        var marginLoser = _.first(_.without(marginSetters, marginWinner));
+
+        var smallestDimensionRaw = Math.floor(this.state['container' + winner]/(numberOfImages - 1));
         var margin = 2;
-        var smallImageHeight = smallestHeightRaw - margin;
+        var smallImageDimension = smallestDimensionRaw - margin;
         var styles = [];
         var commonStyle = {
             display: 'inline-block',
@@ -144,59 +153,60 @@ console.log('container Height set to: ', containerHeight);
             cursor: 'pointer'
         };
 
-        if(numberOfImages < 1) return styles;
+        switch(numberOfImages) {
+            case 0: 
+                break;
+            case 1:
+                // set some big numbers in case width and height not provided
+                if(!images[0].width) images[0].width = 1000000;
+                if(!images[0].height) images[0].height = 1000000;
 
-        if(numberOfImages === 1) {
-            // set some big numbers in case width and height not provided
-            if(!images[0].width) images[0].width = 1000000;
-            if(!images[0].height) images[0].height = 1000000;
-
-            if(images[0].width > images[0].height) {
-                styles = [
-                    {
-                        width: Math.min(this.state.containerWidth, images[0].width) - margin,
-                        height: Math.min(this.state.containerWidth, images[0].width)*images[0].height/images[0].width - margin,
-                        margin: margin
-                    }
-                ];
-            } else {
-                styles = [
-                    {
-                        width: Math.min(this.state.containerHeight, images[0].height)*images[0].width/images[0].height - margin,
-                        height: Math.min(this.state.containerHeight, images[0].height) - margin,
-                        margin: margin
-                    }
-                ];
-            }
-        } else if(numberOfImages === 2) {
-            styles = [
-                {
-                    width: Math.min(smallImageHeight/2)-margin,
-                    height: this.state.containerHeight-margin,
-                    marginRight: margin
-                },
-                {
-                    width: Math.min(smallImageHeight/2)-margin,
-                    height: this.state.containerHeight-margin,
-                    marginBottom: margin
-                },
-            ];
-        } else {
-            styles = [
-                {
-                    width: smallImageHeight*(numberOfImages-2),
-                    height: this.state.containerHeight-margin,
-                    marginRight: margin
+                if(images[0].width > images[0].height) {
+                    styles = [
+                        {
+                            width: Math.min(this.state.containerWidth, images[0].width) - margin,
+                            height: Math.min(this.state.containerWidth, images[0].width)*images[0].height/images[0].width - margin,
+                            margin: margin
+                        }
+                    ];
+                } else {
+                    styles = [
+                        {
+                            width: Math.min(this.state.containerHeight, images[0].height)*images[0].width/images[0].height - margin,
+                            height: Math.min(this.state.containerHeight, images[0].height) - margin,
+                            margin: margin
+                        }
+                    ];
                 }
-            ];
+                break;
+            case 2:
+                styles = [
+                    {
+                        width: Math.min(smallImageDimension/2)-margin,
+                        height: this.state.containerHeight-margin,
+                        marginRight: margin
+                    },
+                    {
+                        width: Math.min(smallImageDimension/2)-margin,
+                        height: this.state.containerHeight-margin,
+                        marginBottom: margin
+                    },
+                ];
+                break;
+            default:
+                styles[0] = {};
+                styles[0][winner.toLowerCase()] = this.state['container'+winner]-margin;
+                styles[0][loser.toLowerCase()] = smallImageDimension*(numberOfImages-2);
+                styles[0]['margin'+marginWinner] = margin;
+                var styleForSmallerImages = {
+                    width: smallImageDimension,
+                    height: smallImageDimension,
+                };
+                styleForSmallerImages['margin'+marginLoser] = margin;
 
-            for(var i = 1; i < numberOfImages && i < 4; i++) {
-                styles.push({
-                    width: smallImageHeight-5,
-                    height: smallImageHeight,
-                    marginBottom: margin
-                });
-            }
+                for(var i = 1; i < numberOfImages && i < 4; i++) {
+                    styles.push(styleForSmallerImages);
+                }
         }
 
         return _.map(styles, function(style) {

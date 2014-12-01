@@ -7,7 +7,7 @@ function handleImageClick(image) {
 }
 
 var feelingLucky = Math.floor(Math.random()*2);
-var luckType = ['', 'nightlife', 'animals', 'city', 'people', 'nature', 'sports', 'cats', 'abstract', 'transport'];
+var luckType = ['', 'nightlife', 'animals', 'city', 'people', 'nature', 'sports', 'cats', 'transport'];
 var imageData;
 
 if(feelingLucky) {
@@ -50,6 +50,25 @@ if(feelingLucky) {
         }
     ];
 }
+
+imageData = [
+    {
+        id: Math.random()*1000,
+        path: 'images/DSCF0983.jpg'
+    },
+    {
+        id: Math.random()*1000,
+        path: 'images/DSCF0989.jpg'
+    },
+    {
+        id: Math.random()*1000,
+        path: 'images/DSCF0991.jpg'
+    },
+    {
+        id: Math.random()*1000,
+        path: 'images/DSCF0999.jpg'
+    }
+];
 
 imageData = _.first(imageData, 4);
 
