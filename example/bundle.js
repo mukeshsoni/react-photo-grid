@@ -183,33 +183,41 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
         var imageIndex = _.findIndex(_imagesToShow, {id: id});
         _imagesToShow[imageIndex].width = width;
         _imagesToShow[imageIndex].height = height;
-        var indexForMaxHeightImage = 0;
-        var containerHeight = this.state.containerHeight;
+        var indexForMaxDimensionImage = 0;
+        var container = {
+            width: this.state.containerWidth,
+            height: this.state.containerHeight
+        };
+
+        var contenders = ['Width', 'Height'];
+        var winner = contenders[this.state.ladyLuck].toLowerCase();
+        var loser = _.first(_.without(contenders, winner)).toLowerCase();
 
         // if all the images have width and height, we can rotate the array around the image with max height,
         // so that the first image has the max height and can be displayed properly on the left side
         if(_.all(_imagesToShow, function(image) { return image.width && image.height;})) {
             // TODO - the logic should not only look the the image with max height but with height >= containerHeight and max(height/width ratio)
 
-            indexForMaxHeightImage = _.findIndex(_imagesToShow, _.max(_imagesToShow, function(image) {
-                return image.height;
+            indexForMaxDimensionImage = _.findIndex(_imagesToShow, _.max(_imagesToShow, function(image) {
+                return image[winner];
             }));
 
-            if(_imagesToShow[indexForMaxHeightImage].height < containerHeight) {
-                containerHeight = _imagesToShow[indexForMaxHeightImage].height;
+            if(_imagesToShow[indexForMaxDimensionImage][winner] < container[winner]) {
+                container[winner] = _imagesToShow[indexForMaxDimensionImage][winner];
             }
 
-            var indexForBestVerticalImage = _.reduce(_imagesToShow, function(result, image, index) {
-                if(image.height >= containerHeight && (image.height/image.width) > (_imagesToShow[result].height/_imagesToShow[result].width)) {
+            var indexForBestMaxImage = _.reduce(_imagesToShow, function(result, image, index) {
+                if(image[winner] >= container[winner] && (image[winner]/image[loser]) > (_imagesToShow[result][winner]/_imagesToShow[result][loser])) {
                     return index;
                 }
                 return result;
             }, 0);
 
-            _imagesToShow.push.apply(_imagesToShow, _imagesToShow.splice(0, indexForBestVerticalImage));
+            _imagesToShow.push.apply(_imagesToShow, _imagesToShow.splice(0, indexForBestMaxImage));
             this.setState({
                 imagesToShow: _imagesToShow,
-                containerHeight: containerHeight
+                containerHeight: container.height,
+                containerWidth: container.width
             });
         }
     },
@@ -263,18 +271,11 @@ var ImageGrid = React.createClass({displayName: 'ImageGrid',
                 }
                 break;
             case 2:
-                styles = [
-                    {
-                        width: Math.min(smallImageDimension/2)-margin,
-                        height: this.state.containerHeight-margin,
-                        marginRight: margin
-                    },
-                    {
-                        width: Math.min(smallImageDimension/2)-margin,
-                        height: this.state.containerHeight-margin,
-                        marginBottom: margin
-                    },
-                ];
+                styles[0] = styles[1] = {};
+
+                styles[0][winner.toLowerCase()] = styles[1][winner.toLowerCase()] = this.state['container' + winner] - margin;
+                styles[0][loser.toLowerCase()] = styles[1][loser.toLowerCase()] = Math.min(smallImageDimension/2) - margin;
+                styles[0]['margin' + marginWinner] = margin;
                 break;
             default:
                 styles[0] = {};
