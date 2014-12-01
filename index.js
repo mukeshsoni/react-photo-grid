@@ -45,11 +45,31 @@ var ImageGrid = React.createClass({
             containerHeight = container[1] || 500;
         }
 
+        var imageData = this.props.data.length <= 4 ? this.props.data : _.first(this.props.data, 4);
+
+        // take care of variations in property data
+        // if someone just passes an array of path strings
+        if(imageData[0] && _.isString(imageData[0])) {
+            imageData = _.map(imageData, function(imagePath) {
+                return {
+                    id: Math.random()*1000,
+                    path: imagePath
+                }
+            });
+        } else if(imageData[0] && _.isObject(imageData[0])) {
+            imageData = _.map(imageData, function(image) {
+                return _.defaults(image, {
+                    id: Math.random()*1000,
+                    path: image.src // in case someone supplies a src property instead of path
+                });
+            });
+        }
+
         var state = {
             ladyLuck: Math.floor(Math.random()*2),
             containerWidth: containerWidth,
             containerHeight: containerHeight,
-            imagesToShow: this.props.data.length <= 4 ? this.props.data : _.first(this.props.data, 4)
+            imagesToShow: imageData
         };
 
         if(this.props.containerWidth) {

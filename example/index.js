@@ -72,9 +72,11 @@ imageData = [
 
 imageData = _.first(imageData, 4);
 
+// let's convert the data into a array of path strings
+imageData = _.pluck(imageData, 'path');
+
 var imageGrid = (
             <ReactImageGrid
-
                 onImageClick={handleImageClick}
                 data={imageData} />
             );
