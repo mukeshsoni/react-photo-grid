@@ -3,6 +3,8 @@ Reactjs Component for Facebook like photo/image grids
 
 This component shows images in a neat square (or whatever dimensions you want) grid. Acts like facebooks image grids. Switches between two modes randomly (small images on right or bottom).
 
+The component tries to figure out the best image to show as the main image (based on their dimensions).
+
 ![How it looks](https://farm8.staticflickr.com/7484/15736005117_57154548cc.jpg "How it looks")
 
 #Usage
