@@ -14,7 +14,7 @@ var React = require('react');
  */
 
 // TODO - element resize event is not working
-
+// TODO - allow user to send a grid size
 var imageElements = [];
 
 function imageLoadCallback(id, callback) {
@@ -34,9 +34,18 @@ function getImageDimensions(src, id, cb) {
 
 var ImageGrid = React.createClass({
     getInitialState: function() {
+        var containerWidth=500, containerHeight=500;
+
+        if(this.props.gridSize) {
+            var container = this.props.gridSize.split('x');
+            containerWidth = container[0] || 500;
+            containerHeight = container[1] || 500;
+        }
+console.log('container width set to: ', containerWidth);
+console.log('container Height set to: ', containerHeight);
         var state = {
-            containerWidth: 500,
-            containerHeight: 500,
+            containerWidth: containerWidth,
+            containerHeight: containerHeight,
             imagesToShow: this.props.data.length <= 4 ? this.props.data : _.first(this.props.data, 4)
         };
 
@@ -61,10 +70,13 @@ var ImageGrid = React.createClass({
             getImageDimensions(image.path, image.id, this.recalculateGrid);
         }, this);
 
-        this.setState({
-            containerWidth: this.getDOMNode().offsetWidth,
-            containerHeight: this.getDOMNode().offsetWidth
-        });
+        // only set it to parents width/height if no gridsize is provided
+        if(!this.props.gridSize) {
+            this.setState({
+                containerWidth: this.getDOMNode().offsetWidth,
+                containerHeight: this.getDOMNode().offsetWidth
+            });
+        }
 
         // $(this.getDOMNode()).resize(this.onResize);
         // elementResizeEvent(this.getDOMNode(), this.onResize);
@@ -90,6 +102,8 @@ var ImageGrid = React.createClass({
 
         // if all the images have width and height, we can rotate the array around the image with max height, so that the first image has the max height and can be displayed properly on the left side
         if(_.all(_imagesToShow, function(image) { return image.width && image.height;})) {
+            // TODO - the logic should not only look the the image with max height but with height >= containerHeight and max(height/width ratio)
+
             indexForMaxHeightImage = _.findIndex(_imagesToShow, _.max(_imagesToShow, function(image) {
                 return image.height;
             }));
@@ -98,7 +112,14 @@ var ImageGrid = React.createClass({
                 containerHeight = _imagesToShow[indexForMaxHeightImage].height;
             }
 
-            _imagesToShow.push.apply(_imagesToShow, _imagesToShow.splice(0, indexForMaxHeightImage));
+            var indexForBestVerticalImage = _.reduce(_imagesToShow, function(result, image, index) {
+                if(image.height >= containerHeight && (image.height/image.width) > (_imagesToShow[result].height/_imagesToShow[result].width)) {
+                    return index;
+                }
+                return result;
+            }, 0);
+
+            _imagesToShow.push.apply(_imagesToShow, _imagesToShow.splice(0, indexForBestVerticalImage));
             this.setState({
                 imagesToShow: _imagesToShow,
                 containerHeight: containerHeight
@@ -216,11 +237,12 @@ var ImageGrid = React.createClass({
 
         var containerStyle = {
             width: this.state.containerWidth,
-            height: this.state.containerWidth
+            height: this.state.containerWidth,
+            backgroundColor: 'white'
         };
 
         return (
-            <div  style={{backgroundColor: 'white'}}>
+            <div  style={containerStyle}>
                 {images}
                 <div style={{'clear': 'both'}} />
             </div>

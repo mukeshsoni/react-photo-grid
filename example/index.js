@@ -12,7 +12,7 @@ var imageData = [
         },
         {
             id: Math.random()*1000,
-            path: 'http://placehold.it/600x700'
+            path: 'http://placehold.it/500x700'
         },
         {
             id: Math.random()*1000,
@@ -24,10 +24,11 @@ var imageData = [
         }
     ];
 
-imageData = _.first(imageData, 3);
+imageData = _.first(imageData, 4);
 
 var imageGrid = (
             <ReactImageGrid
+
                 onImageClick={handleImageClick}
                 data={imageData} />
             );
