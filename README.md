@@ -10,10 +10,10 @@ The component tries to figure out the best image to show as the main image (base
 #Usage
 ```
 var imageData = [
-            path: 'http://lorempixel.com/400/400/'
-            path: 'http://lorempixel.com/500/700/'
-            path: 'http://lorempixel.com/600/500/'
-            path: 'http://lorempixel.com/600/800/'
+            'http://lorempixel.com/400/400/',
+            'http://lorempixel.com/500/700/',
+            'http://lorempixel.com/600/500/',
+            'http://lorempixel.com/600/800/'
     ];
 var imageGrid = (
             <ReactImageGrid
