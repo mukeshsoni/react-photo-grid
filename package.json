@@ -1,6 +1,6 @@
 {
   "name": "react-photo-grid",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Show images in a grid like facebook does. Useful to show a preview of main images when many are uploaded.",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,7 @@
     ]
   },
   "author": "Mukesh Soni <mukeshsoni@gmail.com>",
+  "repository": "https://github.com/mukeshsoni/react-photo-grid",
   "license": "MIT",
   "devDependencies": {
     "browserify": "^6.1.0",
