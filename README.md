@@ -5,6 +5,8 @@ This component shows images in a neat square (or whatever dimensions you want) g
 
 The component tries to figure out the best image to show as the main image (based on their dimensions).
 
+<a href='https://cdn.rawgit.com/mukeshsoni/react-photo-grid/master/example/index.html' target='_blank'>Live Demo</a>
+
 ![How it looks](https://farm8.staticflickr.com/7484/15736005117_57154548cc.jpg "How it looks")
 
 #Usage
