@@ -1,7 +1,6 @@
-/** @jsx React.DOM */
-
 var _ = require('lodash');
 var React = require('react');
+var PropTypes = React.PropTypes;
 
 // TODO - element resize event is not working
 var imageElements = [];
@@ -23,9 +22,9 @@ function getImageDimensions(src, id, cb) {
 
 var ImageGrid = React.createClass({
     propTypes: {
-        data: React.PropTypes.array.isRequired,
-        gridSize: React.PropTypes.string,
-        onImageClick: React.PropTypes.func
+        data: PropTypes.array.isRequired,
+        gridSize: PropTypes.string,
+        onImageClick: PropTypes.func
     },
     getInitialState: function() {
         var containerWidth=500, containerHeight=500;
@@ -152,7 +151,7 @@ var ImageGrid = React.createClass({
     },
     getComponentStyles: function(images) {
         var numberOfImages = images.length;
-        
+
         var marginSetters = ['Bottom', 'Right'];
         var contenders = ['Width', 'Height'];
         var winner = contenders[this.state.ladyLuck];
@@ -174,7 +173,7 @@ var ImageGrid = React.createClass({
         };
 
         switch(numberOfImages) {
-            case 0: 
+            case 0:
                 break;
             case 1:
                 // set some big numbers in case width and height not provided
@@ -219,7 +218,7 @@ var ImageGrid = React.createClass({
 
                 for(var i = 1; i < numberOfImages && i < 4; i++) {
                     // cloning is important here because otherwise changing the dimension of last image changes it for everyone
-                    styles.push(_.clone(styleForSmallerImages)); 
+                    styles.push(_.clone(styleForSmallerImages));
                 }
 
                 // adjust the width/height of the last image in case of round off errors in division
@@ -269,8 +268,8 @@ var ImageGrid = React.createClass({
             height: this.state.containerWidth,
             backgroundColor: 'white'
         };
-// the outer div is needed so that container width can be recalculated based on the parent container width (which the outer div inherits
-// the div inside the outer div is assigned a width in the first render itself. so that doesn't work out while trying to reset container width
+        // the outer div is needed so that container width can be recalculated based on the parent container width (which the outer div inherits
+        // the div inside the outer div is assigned a width in the first render itself. so that doesn't work out while trying to reset container width
         return (
             <div>
                 <div style={containerStyle}>
