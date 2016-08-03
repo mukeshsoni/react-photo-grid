@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var React = require('react');
+var ReactDOM = require('react-dom');
 var PropTypes = React.PropTypes;
 
 // TODO - element resize event is not working
@@ -87,19 +88,19 @@ var ImageGrid = React.createClass({
         // only set it to parents width/height if no gridsize is provided
         if(!this.props.gridSize) {
             this.setState({
-                containerWidth: this.getDOMNode().offsetWidth,
-                containerHeight: this.getDOMNode().offsetWidth
+                containerWidth: ReactDOM.findDOMNode(this).offsetWidth,
+                containerHeight: ReactDOM.findDOMNode(this).offsetWidth
             });
         }
 
-        // $(this.getDOMNode()).resize(this.onResize);
-        // elementResizeEvent(this.getDOMNode(), this.onResize);
+        // $(ReactDOM.findDOMNode(this)..resize(this.onResize);
+        // elementResizeEvent(ReactDOM.findDOMNode(this). this.onResize);
     },
     // Throttle updates to 60 FPS.
     onResize: _.throttle(function() {
         this.setState({
-            containerWidth: this.getDOMNode().offsetWidth,
-            containerHeight: this.getDOMNode().offsetWidth
+            containerWidth: ReactDOM.findDOMNode(this).offsetWidth,
+            containerHeight: ReactDOM.findDOMNode(this).offsetWidth
         });
     }, 16.666),
     handleImageClick: function handleImageClick(imageId, event) {
