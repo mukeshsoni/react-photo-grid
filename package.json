@@ -1,6 +1,6 @@
 {
   "name": "react-photo-grid",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Show images in a grid like facebook does. Useful to show a preview of main images when many are uploaded.",
   "main": "index.js",
   "scripts": {
@@ -31,7 +31,8 @@
     "watchify": "^2.0.0"
   },
   "dependencies": {
-    "lodash": "^2.4.1",
-    "react": "^0.12.1"
+    "lodash": "~3",
+    "react": "~15",
+    "react-dom": "~15"
   }
 }
