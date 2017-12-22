@@ -12,11 +12,11 @@ The component tries to figure out the best image to show as the main image (base
 #Usage
 ```
 var imageData = [
-            'http://lorempixel.com/400/400/',
-            'http://lorempixel.com/500/700/',
-            'http://lorempixel.com/600/500/',
-            'http://lorempixel.com/600/800/'
-    ];
+    'http://via.placeholder.com/400x400/',
+    'http://via.placeholder.com/500x700/',
+    'http://via.placeholder.com/600x500/',
+    'http://via.placeholder.com/600x800/'
+];
 var imageGrid = (
             <ReactPhotoGrid
                 onImageClick={handleImageClick}
