@@ -18,7 +18,7 @@ var imageData = [
             'http://lorempixel.com/600/800/'
     ];
 var imageGrid = (
-            <ReactImageGrid
+            <ReactPhotoGrid
                 onImageClick={handleImageClick}
                 data={imageData} />
             );
