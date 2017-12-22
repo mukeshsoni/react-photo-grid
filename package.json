@@ -1,18 +1,27 @@
 {
   "name": "react-photo-grid",
-  "version": "1.1.4",
+  "version": "1.2.4",
   "description": "Show images in a grid like facebook does. Useful to show a preview of main images when many are uploaded.",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "modules": "es/index.js",
+  "files": [
+    "es",
+    "lib",
+    "umd"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "watchify example/index.js -o example/bundle.js -v & st -nc"
+    "build": "npx nwb build-react-component",
+    "clean": "npx nwb clean-module && npx clean-demo",
+    "start": "npx nwb serve-react-demo",
+    "lint": "eslint src"
   },
   "keywords": [
     "react-photo-grid",
     "react-image-grid",
     "react-component",
     "reactjs",
-    "react"
+    "react",
+    "resizable image grid"
   ],
   "browserify": {
     "transform": [
@@ -24,15 +33,21 @@
   "repository": "https://github.com/mukeshsoni/react-photo-grid",
   "license": "MIT",
   "devDependencies": {
-    "browserify": "^6.1.0",
-    "node-lessify": "0.0.6",
-    "reactify": "^0.16.0",
-    "st": "^0.5.2",
-    "watchify": "^2.0.0"
+    "babel-preset-latest": "6.24.1",
+    "babel-preset-react": "6.24.1",
+    "chai": "^3.0.0",
+    "dirty-chai": "^1.2.2",
+    "eslint": "0.23.0",
+    "nwb": "0.18.x",
+    "react": "^15.x",
+    "react-dom": "^15.3.2",
+    "regenerator-runtime": "0.10.5"
   },
   "dependencies": {
-    "lodash": "~3",
-    "react": "~15",
-    "react-dom": "~15"
+    "lodash.throttle": "4.1.1"
+  },
+  "peerDependencies": {
+    "react": ">=0.14.0 || ^15.0.0",
+    "react-dom": ">=0.14.0 || ^15.0.0"
   }
 }
