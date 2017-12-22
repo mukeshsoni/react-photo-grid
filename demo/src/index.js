@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { render } from 'react-dom'
 
-import ReactImageGrid from '../../src/index.js'
+import ReactPhotoGrid from '../../src/index.js'
 
 class Demo extends Component {
     handleImageClick = (image) => {
@@ -18,7 +18,7 @@ class Demo extends Component {
 
         return <div>
             <h1>React Photo Grid</h1>
-            <ReactImageGrid
+            <ReactPhotoGrid
                 onImageClick={this.handleImageClick}
                 data={imageData} />
         </div>
