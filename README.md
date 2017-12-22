@@ -19,7 +19,7 @@ var imageData = [
 ];
 var imageGrid = (
             <ReactPhotoGrid
-                onImageClick={handleImageClick}
+                onImageClick={this.handleImageClick}
                 data={imageData} />
             );
 React.render(imageGrid, document.getElementById('container'));
