@@ -307,7 +307,7 @@ var ImageGrid = React.createClass({
                     <img
                         style={imageStyle}
                         src={image.path}
-                        onClick={this.handleImageClick.bind(this, image.id)} />
+                        onClick={this.handleImageClick.bind(this, image.path, image)} />
                 </div>
             );
         }, this);

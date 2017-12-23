@@ -1,9 +1,9 @@
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import throttle from 'lodash.throttle';
-var React = require('react');
-var ReactDOM = require('react-dom');
-var PropTypes = React.PropTypes;
 
 // TODO - element resize event is not working
 var imageElements = [];
@@ -105,14 +105,12 @@ var ImageGrid = React.createClass({
         }
 
         var state = {
-            // ladyLuck: 0,
-            ladyLuck: 1, // Math.floor(Math.random() * 2),
+            ladyLuck: Math.floor(Math.random() * 2),
             containerWidth: containerWidth,
             containerHeight: containerHeight,
             imagesToShow: imageData
         };
 
-        console.log('ladyLuck', state.ladyLuck);
         if (this.props.containerWidth) {
             state.containerWidth = this.props.containerWidth;
         }
@@ -314,7 +312,7 @@ var ImageGrid = React.createClass({
                 React.createElement('img', {
                     style: imageStyle,
                     src: image.path,
-                    onClick: this.handleImageClick.bind(this, image.id) })
+                    onClick: this.handleImageClick.bind(this, image.path, image) })
             );
         }, this);
 
