@@ -35,7 +35,7 @@
         "nwb": "0.18.x",
         "react": "^15.x",
         "react-dom": "^15.3.2",
-        "regenerator-runtime": "0.10.5"
+        "regenerator-runtime": "0.13.3"
     },
     "dependencies": {
         "lodash.throttle": "4.1.1"
