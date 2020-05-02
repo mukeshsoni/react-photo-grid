@@ -51,7 +51,8 @@ To contain the grid width, you can do one of 2 things -
 <div style={{width: 500}}>
   <ReactPhotoGrid
       onImageClick={this.handleImageClick}
-      data={imageData} />
+      data={imageData}
+  />
 </div>
 ```
 
