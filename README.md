@@ -10,19 +10,41 @@ The component tries to figure out the best image to show as the main image (base
 ![How it looks](https://farm8.staticflickr.com/7484/15736005117_57154548cc.jpg "How it looks")
 
 #Usage
-```
+```JavaScript
 var imageData = [
     'http://via.placeholder.com/400x400/',
     'http://via.placeholder.com/500x700/',
     'http://via.placeholder.com/600x500/',
     'http://via.placeholder.com/600x800/'
 ];
-var imageGrid = (
-            <ReactPhotoGrid
-                onImageClick={this.handleImageClick}
-                data={imageData} />
-            );
-React.render(imageGrid, document.getElementById('container'));
+
+// whereever you use ReactPhotoGrid
+<ReactPhotoGrid
+    onImageClick={this.handleImageClick}
+    data={imageData} 
+/>
+);
+```
+
+The dimensions of the final grid depends on the images provided and the amount
+of space in the parent container. If the widest image is selected as the hero
+image and the width of container element is more that that width, the grid width
+will be that images width. 
+
+To contain the grid width, you can do one of 2 things - 
+
+1. Specify a gridSize. The grid size is specified as `wxh`, width and height
+   numbers separated by an `x`. E.g. `500x500`;
+
+2. Set a width on the container of ReactPhotoGrid like below - 
+
+
+```JavaScript
+<div style={{width: 500}}>
+  <ReactPhotoGrid
+      onImageClick={this.handleImageClick}
+      data={imageData} />
+</div>
 ```
 
 You can also pass gridSize as a property. It's a string which consists of width and height separated by an x. E.g. gridSize="500x500".
