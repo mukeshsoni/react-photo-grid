@@ -1,17 +1,22 @@
 import * as React from "react";
-import ReactDOM from "react-dom";
-import PropTypes from "prop-types";
 
 // TODO - element resize event is not working
-var imageElements = [];
+var imageElements: Array<HTMLImageElement> = [];
 
-function imageLoadCallback(id, callback) {
-  return function (e) {
+function imageLoadCallback(
+  id: string,
+  callback: (id: string, width: number, height: number) => void
+) {
+  return function (this: HTMLImageElement) {
     callback(id, this.naturalWidth, this.naturalHeight);
   };
 }
 
-function getImageDimensions(src, id, cb) {
+function getImageDimensions(
+  src: string,
+  id: string,
+  cb: (id: string, width: number, height: number) => void
+) {
   var img = new Image();
   img.id = id;
   imageElements.push(img);
@@ -20,23 +25,19 @@ function getImageDimensions(src, id, cb) {
   img.src = src;
 }
 
-function isObject(obj) {
-  return obj !== null && typeof obj === "Object";
-}
-
-function isString(str) {
+function isString(str: unknown) {
   return typeof str === "string";
 }
 
-function first(arr) {
+function first<T>(arr: Array<T>): T {
   return arr[0];
 }
 
-function without(arr, exclude) {
+function without<T>(arr: Array<T>, exclude: T): Array<T> {
   return arr.filter((item) => item !== exclude);
 }
 
-function findIndex(arr, pred) {
+function findIndex<T>(arr: Array<T>, pred: (val: T) => boolean): number {
   return arr.reduce((acc, val, index) => {
     if (acc >= 0) {
       return acc;
@@ -46,13 +47,13 @@ function findIndex(arr, pred) {
   }, -1);
 }
 
-function all(arr, pred) {
-  return arr.reduce((acc, item) => {
+function all<T>(arr: Array<T>, pred: (val: T) => boolean): boolean {
+  return arr.reduce((acc: boolean, item: T) => {
     return pred(item) && acc;
   }, true);
 }
 
-function max(arr, iteratee) {
+function max<T>(arr: Array<T>, iteratee: (arg0: T) => number) {
   return arr.reduce((acc, item) => {
     if (iteratee(item) > iteratee(acc)) {
       return item;
@@ -62,41 +63,77 @@ function max(arr, iteratee) {
   }, arr[0]);
 }
 
-class ReactPhotoGrid extends React.Component {
-  static defaultProps = {
-    data: [],
-  };
+interface ImageData {
+  id: string;
+  src: string;
+}
 
-  constructor(props) {
+type StateImageData = ImageData & {
+  width: number;
+  height: number;
+};
+
+interface Props {
+  data: Array<string> | Array<ImageData>;
+  onImageClick: (image: string) => void;
+  gridSize?: string;
+  containerWidth?: number;
+}
+
+interface State {
+  ladyLuck: number;
+  containerWidth: number;
+  containerHeight: number;
+  imagesToShow: Array<StateImageData>;
+}
+
+class ReactPhotoGrid extends React.Component<Props, State> {
+  private containerRef = React.createRef<HTMLDivElement>();
+
+  constructor(props: Props) {
     super(props);
 
-    var containerWidth = 500,
-      containerHeight = 500;
+    const defaultContainerWidth = 500;
+    const defaultContainerHeight = 500;
+
+    let containerWidth = defaultContainerWidth;
+    let containerHeight = defaultContainerHeight;
 
     if (this.props.gridSize) {
       var container = this.props.gridSize.split("x");
-      containerWidth = container[0] || 500;
-      containerHeight = container[1] || 500;
+      containerWidth = parseInt(container[0], 10) || defaultContainerWidth;
+      containerHeight = parseInt(container[1], 10) || defaultContainerHeight;
     }
 
-    var imageData =
-      this.props.data.length <= 4 ? this.props.data : first(this.props.data, 4);
+    const imageData =
+      this.props.data.length <= 4
+        ? this.props.data
+        : this.props.data.slice(0, 4);
+    let imagesToShow;
 
     // take care of variations in property data
     // if someone just passes an array of path strings
     if (imageData[0] && isString(imageData[0])) {
-      imageData = imageData.map(function (imagePath) {
+      imagesToShow = (imageData as Array<string>).map(function (
+        imagePath: string
+      ) {
         return {
-          id: Math.random() * 1000,
-          path: imagePath,
+          id: `${Math.random() * 1000}`,
+          src: imagePath,
+          width: 0,
+          height: 0,
         };
       });
-    } else if (imageData[0] && isObject(imageData[0])) {
-      imageData = imageData.map(function (image) {
+    } else {
+      imagesToShow = (imageData as Array<ImageData>).map(function (
+        image: ImageData
+      ) {
         return {
-          id: Math.random() * 1000,
-          path: image.src, // in case someone supplies a src property instead of path
+          id: image.id || `${Math.random() * 1000}`,
+          src: image.src, // in case someone supplies a src property instead of path
           ...image,
+          width: 0,
+          height: 0,
         };
       });
     }
@@ -105,7 +142,7 @@ class ReactPhotoGrid extends React.Component {
       ladyLuck: Math.floor(Math.random() * 2),
       containerWidth: containerWidth,
       containerHeight: containerHeight,
-      imagesToShow: imageData,
+      imagesToShow,
     };
 
     if (this.props.containerWidth) {
@@ -116,7 +153,7 @@ class ReactPhotoGrid extends React.Component {
   }
 
   componentWillUnmount() {
-    imageElements.forEach(function (imageElement) {
+    imageElements.forEach((imageElement) => {
       imageElement.removeEventListener(
         "load",
         imageLoadCallback(imageElement.id, this.recalculateGrid)
@@ -125,15 +162,19 @@ class ReactPhotoGrid extends React.Component {
   }
 
   componentDidMount() {
-    this.state.imagesToShow.forEach(function (image, index) {
-      getImageDimensions(image.path, image.id, this.recalculateGrid);
+    this.state.imagesToShow.forEach((image: StateImageData) => {
+      getImageDimensions(image.src, image.id, this.recalculateGrid);
     }, this);
 
     // only set it to parents width/height if no gridsize is provided
-    if (!this.props.gridSize) {
+    if (
+      !this.props.gridSize &&
+      this.containerRef &&
+      this.containerRef.current
+    ) {
       this.setState({
-        containerWidth: ReactDOM.findDOMNode(this).offsetWidth,
-        containerHeight: ReactDOM.findDOMNode(this).offsetWidth,
+        containerWidth: this.containerRef.current.offsetWidth,
+        containerHeight: this.containerRef.current.offsetWidth,
       });
     }
 
@@ -143,17 +184,19 @@ class ReactPhotoGrid extends React.Component {
 
   // Throttle updates to 60 FPS.
   onResize = () => {
-    this.setState({
-      containerWidth: ReactDOM.findDOMNode(this).offsetWidth,
-      containerHeight: ReactDOM.findDOMNode(this).offsetWidth,
-    });
+    if (this.containerRef && this.containerRef.current) {
+      this.setState({
+        containerWidth: this.containerRef.current.offsetWidth,
+        containerHeight: this.containerRef.current.offsetWidth,
+      });
+    }
   };
 
-  handleImageClick = (imageId, event) => {
-    this.props.onImageClick && this.props.onImageClick(imageId);
+  handleImageClick = (imageSrc: string) => {
+    this.props.onImageClick && this.props.onImageClick(imageSrc);
   };
 
-  recalculateGrid = (id, width, height) => {
+  recalculateGrid = (id: string, width: number, height: number) => {
     var _imagesToShow = [...this.state.imagesToShow];
 
     var imageIndex = findIndex(_imagesToShow, (image) => image.id === id);
@@ -166,23 +209,23 @@ class ReactPhotoGrid extends React.Component {
     };
 
     var contenders = ["Width", "Height"];
-    var winner = contenders[this.state.ladyLuck].toLowerCase();
+    var winner = contenders[this.state.ladyLuck].toLowerCase() as
+      | "width"
+      | "height";
     var loser = first(
       without(contenders, contenders[this.state.ladyLuck])
-    ).toLowerCase();
+    ).toLowerCase() as "width" | "height";
 
     // if all the images have width and height, we can rotate the array around the image with max height,
     // so that the first image has the max height and can be displayed properly on the left side
     if (
-      all(_imagesToShow, function (image) {
-        return image.width && image.height;
+      all(_imagesToShow, (image: StateImageData) => {
+        return !!(image.width && image.height);
       })
     ) {
       // TODO - the logic should not only look the the image with max height but with height >= containerHeight and max(height/width ratio)
 
-      var maxDimensionImage = max(_imagesToShow, function (image) {
-        return image[winner];
-      });
+      var maxDimensionImage = max(_imagesToShow, (image) => image[winner]);
 
       indexForMaxDimensionImage = findIndex(
         _imagesToShow,
@@ -224,22 +267,23 @@ class ReactPhotoGrid extends React.Component {
     }
   };
 
-  getComponentStyles = (images) => {
+  getComponentStyles = (images: Array<StateImageData>) => {
     var numberOfImages = images.length;
 
     var marginSetters = ["Bottom", "Right"];
     var contenders = ["Width", "Height"];
-    var winner = contenders[this.state.ladyLuck];
+    var winner = contenders[this.state.ladyLuck] as "Width" | "Height";
     var loser = first(without(contenders, winner));
     var marginWinner = marginSetters[this.state.ladyLuck];
     var marginLoser = first(without(marginSetters, marginWinner));
 
     var smallestDimensionRaw = Math.floor(
-      this.state["container" + winner] / (numberOfImages - 1)
+      this.state[`container${winner}` as "containerWidth"] /
+        (numberOfImages - 1)
     );
     var margin = 2;
     var smallImageDimension = smallestDimensionRaw - margin;
-    var styles = [];
+    var styles: Array<any> = [];
     var commonStyle = {
       display: "inline-block",
       position: "relative",
@@ -288,19 +332,25 @@ class ReactPhotoGrid extends React.Component {
       case 2:
         styles[0] = styles[1] = {};
 
-        styles[0][winner.toLowerCase()] = styles[1][winner.toLowerCase()] =
-          this.state["container" + winner] - margin;
+        styles[0][winner.toLowerCase() as "width" | "height"] = styles[1][
+          winner.toLowerCase() as "width" | "height"
+        ] =
+          this.state[
+            `container${winner}` as "containerWidth" | "containerHeight"
+          ] - margin;
         styles[0][loser.toLowerCase()] = styles[1][loser.toLowerCase()] =
           Math.min(smallImageDimension / 2) - margin;
         styles[0]["margin" + marginWinner] = margin;
         break;
       default:
         styles[0] = {};
-        styles[0][winner.toLowerCase()] = this.state["container" + winner];
+        styles[0][winner.toLowerCase()] = this.state[
+          `container${winner}` as "containerWidth" | "containerHeight"
+        ];
         styles[0][loser.toLowerCase()] =
           smallImageDimension * (numberOfImages - 2);
         styles[0]["margin" + marginWinner] = margin;
-        var styleForSmallerImages = {
+        var styleForSmallerImages: any = {
           width: smallImageDimension,
           height: smallImageDimension,
         };
@@ -330,13 +380,18 @@ class ReactPhotoGrid extends React.Component {
   render() {
     var componentStyles = this.getComponentStyles(this.state.imagesToShow);
 
-    var images = this.state.imagesToShow.map(function (image, index) {
+    var images = this.state.imagesToShow.map((image, index) => {
       var componentStyle = componentStyles[index];
 
       // max width and height has to be dynamic depending on this image's dimensions
       var imageStyle;
 
-      if (image.width && image.height) {
+      if (
+        image.width &&
+        image.height &&
+        componentStyle.width &&
+        componentStyle.height
+      ) {
         if (
           image.width <= componentStyle.width ||
           image.height <= componentStyle.height
@@ -360,8 +415,8 @@ class ReactPhotoGrid extends React.Component {
         <div key={"image_" + index} style={componentStyle}>
           <img
             style={imageStyle}
-            src={image.path}
-            onClick={this.handleImageClick.bind(this, image.path, image)}
+            src={image.src}
+            onClick={() => this.handleImageClick(image.src)}
           />
         </div>
       );
@@ -384,11 +439,5 @@ class ReactPhotoGrid extends React.Component {
     );
   }
 }
-
-ReactPhotoGrid.propTypes = {
-  data: PropTypes.array.isRequired,
-  gridSize: PropTypes.string,
-  onImageClick: PropTypes.func,
-};
 
 export default ReactPhotoGrid;

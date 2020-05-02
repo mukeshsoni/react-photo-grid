@@ -17,6 +17,7 @@ module.exports = {
       config.resolve.alias = {
         ...config.alias,
         react: path.resolve(__dirname, "./node_modules", "react"),
+        "react-dom": path.resolve(__dirname, "./node_modules", "react-dom"),
       };
 
       // eslint-disable-next-line
