@@ -32,9 +32,9 @@
     "@babel/preset-env": "^7.9.5",
     "@babel/preset-react": "^7.9.4",
     "gh-pages": "^2.2.0",
-    "nwb": "0.24.x",
-    "react": "^15.x",
-    "react-dom": "^15.3.2",
+    "nwb": "^0.24.5",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "react-syntax-highlighter": "^12.2.1"
   },
   "dependencies": {
