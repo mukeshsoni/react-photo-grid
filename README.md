@@ -31,7 +31,7 @@ of space in the parent container. If the widest image is selected as the hero
 image and the width of container element is more that that width, the grid width
 will be that images width. 
 
-To contain the grid width, you can do one of 2 things - 
+To contain the grid width, you can do one of 3 things - 
 
 1. Specify a gridSize. The grid size is specified as `wxh`, width and height
    numbers separated by an `x`. E.g. `500x500`;
@@ -54,6 +54,16 @@ To contain the grid width, you can do one of 2 things -
       data={imageData}
   />
 </div>
+```
+
+3. Specify a containerWidth
+
+```JavaScript
+<ReactPhotoGrid
+    onImageClick={this.handleImageClick}
+    data={imageData}
+    containerWidth={500}
+/>
 ```
 
 You can also pass gridSize as a property. It's a string which consists of width and height separated by an x. E.g. gridSize="500x500".
