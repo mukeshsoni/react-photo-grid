@@ -1,0 +1,34 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "semi": 0,
+    "no-underscore-dangle": "off",
+    "no-mixed-operators": "off",
+    "max-len": "off",
+    "comma-dangle": "off",
+    "arrow-parens": "off",
+    "no-else-return": "off",
+    "object-curly-newline": "off",
+    "no-confusing-arrow": "off",
+    "function-paren-newline": "off",
+    "no-nested-ternary": "off",
+    "import/no-extraneous-dependencies": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/explicit-function-return-type": "off"
+  },
+  "env": {
+    "browser": true,
+    "jest/globals": true
+  }
+}
+

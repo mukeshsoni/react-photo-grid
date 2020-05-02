@@ -37,7 +37,13 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-syntax-highlighter": "^12.2.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "@typescript-eslint/eslint-plugin": "^2.30.0",
+    "@typescript-eslint/parser": "^2.30.0",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^5.16.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-react": "^7.7.0"
   },
   "peerDependencies": {
     "react": ">=0.14.0 || ^15.0.0",
