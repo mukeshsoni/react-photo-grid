@@ -1,7 +1,6 @@
-import React, { Component } from "react";
+import * as React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import throttle from "lodash.throttle";
 
 // TODO - element resize event is not working
 var imageElements = [];
