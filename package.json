@@ -31,11 +31,13 @@
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/preset-env": "^7.9.5",
     "@babel/preset-react": "^7.9.4",
+    "awesome-typescript-loader": "^5.2.1",
     "gh-pages": "^2.2.0",
     "nwb": "^0.24.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-syntax-highlighter": "^12.2.1"
+    "react-syntax-highlighter": "^12.2.1",
+    "typescript": "^3.8.3"
   },
   "dependencies": {
     "lodash.throttle": "4.1.1"

@@ -1,3 +1,5 @@
+var _jsxFileName = "/Users/mukesh/Documents/projects/react-photo-grid/src/index.js";
+
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
@@ -311,13 +313,25 @@ var ReactPhotoGrid = /*#__PURE__*/function (_React$Component) {
         }
       }
 
-      return React.createElement("div", {
+      return /*#__PURE__*/React.createElement("div", {
         key: "image_" + index,
-        style: componentStyle
-      }, React.createElement("img", {
+        style: componentStyle,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 361,
+          columnNumber: 9
+        }
+      }, /*#__PURE__*/React.createElement("img", {
         style: imageStyle,
         src: image.path,
-        onClick: this.handleImageClick.bind(this, image.path, image)
+        onClick: this.handleImageClick.bind(this, image.path, image),
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 362,
+          columnNumber: 11
+        }
       }));
     }, this);
     var containerStyle = {
@@ -327,11 +341,30 @@ var ReactPhotoGrid = /*#__PURE__*/function (_React$Component) {
     }; // the outer div is needed so that container width can be recalculated based on the parent container width (which the outer div inherits
     // the div inside the outer div is assigned a width in the first render itself. so that doesn't work out while trying to reset container width
 
-    return React.createElement("div", null, React.createElement("div", {
-      style: containerStyle
-    }, images, React.createElement("div", {
+    return /*#__PURE__*/React.createElement("div", {
+      __self: this,
+      __source: {
+        fileName: _jsxFileName,
+        lineNumber: 379,
+        columnNumber: 7
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: containerStyle,
+      __self: this,
+      __source: {
+        fileName: _jsxFileName,
+        lineNumber: 380,
+        columnNumber: 9
+      }
+    }, images, /*#__PURE__*/React.createElement("div", {
       style: {
         clear: "both"
+      },
+      __self: this,
+      __source: {
+        fileName: _jsxFileName,
+        lineNumber: 382,
+        columnNumber: 11
       }
     })));
   };
