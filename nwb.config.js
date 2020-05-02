@@ -5,6 +5,7 @@ module.exports = {
   npm: {
     esModules: true,
     umd: {
+      entry: "./src/index.js",
       global: "ReactPhotoGrid",
       externals: {
         react: "React",

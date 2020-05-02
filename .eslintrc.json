@@ -27,8 +27,6 @@
     "@typescript-eslint/explicit-function-return-type": "off"
   },
   "env": {
-    "browser": true,
-    "jest/globals": true
+    "browser": true
   }
 }
-
