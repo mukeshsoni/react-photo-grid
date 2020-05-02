@@ -1,6 +1,6 @@
 {
   "name": "react-photo-grid",
-  "version": "1.4.8",
+  "version": "1.4.9",
   "description": "Show images in a grid like facebook does. Useful to show a preview of main images when many are uploaded.",
   "main": "lib/ReactPhotoGrid.js",
   "modules": "es/ReactPhotoGrid.js",
