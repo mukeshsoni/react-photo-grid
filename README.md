@@ -36,6 +36,14 @@ To contain the grid width, you can do one of 2 things -
 1. Specify a gridSize. The grid size is specified as `wxh`, width and height
    numbers separated by an `x`. E.g. `500x500`;
 
+```JavaScript
+<ReactPhotoGrid
+  onImageClick={this.handleImageClick}
+  data={imageData}
+  gridSize="400x400"
+/>
+```
+
 2. Set a width on the container of ReactPhotoGrid like below - 
 
 
