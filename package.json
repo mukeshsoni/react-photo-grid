@@ -13,7 +13,10 @@
     "build": "npx nwb build-react-component",
     "clean": "npx nwb clean-module && npx clean-demo",
     "start": "npx nwb serve-react-demo",
-    "deploy": "gh-pages -d demo/dist"
+    "deploy": "gh-pages -d demo/dist",
+    "release:major": "changelog -M && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version major && git push origin && git push origin --tags",
+    "release:minor": "changelog -m && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version minor && git push origin && git push origin --tags",
+    "release:patch": "changelog -p && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version patch && git push origin && git push origin --tags"
   },
   "keywords": [
     "react-photo-grid",
@@ -31,19 +34,20 @@
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/preset-env": "^7.9.5",
     "@babel/preset-react": "^7.9.4",
+    "@typescript-eslint/eslint-plugin": "^2.30.0",
+    "@typescript-eslint/parser": "^2.30.0",
     "awesome-typescript-loader": "^5.2.1",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^5.16.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-react": "^7.7.0",
+    "generate-changelog": "^1.8.0",
     "gh-pages": "^2.2.0",
     "nwb": "^0.24.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-syntax-highlighter": "^12.2.1",
-    "typescript": "^3.8.3",
-    "@typescript-eslint/eslint-plugin": "^2.30.0",
-    "@typescript-eslint/parser": "^2.30.0",
-    "babel-eslint": "^10.0.3",
-    "eslint": "^5.16.0",
-    "eslint-plugin-import": "^2.11.0",
-    "eslint-plugin-react": "^7.7.0"
+    "typescript": "^3.8.3"
   },
   "peerDependencies": {
     "react": ">=0.14.0 || ^15.0.0",
