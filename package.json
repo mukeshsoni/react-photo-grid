@@ -4,6 +4,7 @@
   "description": "Show images in a grid like facebook does. Useful to show a preview of main images when many are uploaded.",
   "main": "dist/index.js",
   "module": "dist/react-photo-grid.esm.js",
+  "typings": "dist/ReactPhotoGrid.d.ts",
   "files": [
     "dist",
     "src"
