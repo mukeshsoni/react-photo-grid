@@ -50,8 +50,8 @@
     "typescript": "^3.8.3"
   },
   "peerDependencies": {
-    "react": ">=0.14.0 || ^15.0.0",
-    "react-dom": ">=0.14.0 || ^15.0.0"
+    "react": ">=0.14.0 || ^16.3.1",
+    "react-dom": ">=0.14.0 || ^16.3.1"
   },
   "dependencies": {
     "@types/react": "^16.9.34",
