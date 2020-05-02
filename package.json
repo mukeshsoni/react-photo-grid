@@ -2,17 +2,16 @@
   "name": "react-photo-grid",
   "version": "1.4.10",
   "description": "Show images in a grid like facebook does. Useful to show a preview of main images when many are uploaded.",
-  "main": "lib/index.js",
-  "modules": "es/index.js",
+  "main": "dist/index.js",
+  "module": "dist/react-photo-grid.esm.js",
   "files": [
-    "es",
-    "lib",
-    "umd"
+    "dist",
+    "src"
   ],
   "scripts": {
-    "build": "npx nwb build-react-component",
-    "clean": "npx nwb clean-module && npx clean-demo",
-    "start": "npx nwb serve-react-demo",
+    "build": "tsdx build --entry ./src/ReactPhotoGrid.tsx",
+    "clean": "nwb clean-module && npx clean-demo",
+    "start": "nwb serve-react-demo",
     "deploy": "gh-pages -d demo/dist",
     "release:major": "changelog -M && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version major && git push origin && git push origin --tags",
     "release:minor": "changelog -m && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version minor && git push origin && git push origin --tags",
@@ -47,6 +46,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-syntax-highlighter": "^12.2.1",
+    "tsdx": "^0.13.2",
     "typescript": "^3.8.3"
   },
   "peerDependencies": {
