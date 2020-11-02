@@ -46,7 +46,7 @@
     "nwb": "^0.24.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-syntax-highlighter": "^12.2.1",
+    "react-syntax-highlighter": "^15.3.0",
     "tsdx": "^0.13.2",
     "typescript": "^3.8.3"
   },
