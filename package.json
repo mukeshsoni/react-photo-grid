@@ -43,7 +43,7 @@
     "eslint-plugin-react": "^7.7.0",
     "generate-changelog": "^1.8.0",
     "gh-pages": "^2.2.0",
-    "nwb": "^0.24.5",
+    "nwb": "^0.25.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-syntax-highlighter": "^12.2.1",
