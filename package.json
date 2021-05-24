@@ -55,7 +55,7 @@
     "react-dom": ">=0.14.0 || ^16.3.1"
   },
   "dependencies": {
-    "@types/react": "^16.9.34",
+    "@types/react": "^17.0.6",
     "@types/react-dom": "^16.9.7"
   }
 }
